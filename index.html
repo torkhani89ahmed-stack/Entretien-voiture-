@@ -1,0 +1,710 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#15262f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Peugeot 106">
+<title>Entretien Peugeot 106</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #e9eef0;
+  --surface: #f8fafb;
+  --ink: #15262f;
+  --muted: #5b6e77;
+  --line: #cdd8dd;
+  --primary: #0d6c78;
+  --primary-ink: #ffffff;
+  --ok: #2c7d55;
+  --soon: #b87708;
+  --late: #c0352b;
+  --track: #d9e2e6;
+  --odo-bg: #15262f;
+  --odo-cell: #22394a;
+  --odo-ink: #f3f6f7;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1a20;
+    --surface: #17262e;
+    --ink: #e6eef1;
+    --muted: #93a8b1;
+    --line: #2a3d47;
+    --primary: #3fb6c4;
+    --primary-ink: #08242a;
+    --ok: #55c08a;
+    --soon: #e3a93a;
+    --late: #ee6e63;
+    --track: #25373f;
+    --odo-bg: #0a1319;
+    --odo-cell: #1b2d38;
+    --odo-ink: #f3f6f7;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1a20;
+  --surface: #17262e;
+  --ink: #e6eef1;
+  --muted: #93a8b1;
+  --line: #2a3d47;
+  --primary: #3fb6c4;
+  --primary-ink: #08242a;
+  --ok: #55c08a;
+  --soon: #e3a93a;
+  --late: #ee6e63;
+  --track: #25373f;
+  --odo-bg: #0a1319;
+  --odo-cell: #1b2d38;
+  --odo-ink: #f3f6f7;
+}
+html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+*, *::before, *::after { box-sizing: inherit; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Barlow", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.45;
+}
+.wrap { max-width: 640px; margin: 0 auto; padding: 16px 16px 40px; }
+h1, h2, .num { font-family: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif; }
+h1 { font-size: 28px; font-weight: 700; margin: 8px 0 14px; letter-spacing: .2px; }
+h2 { font-size: 22px; font-weight: 600; margin: 28px 0 10px; }
+
+/* Compteur */
+.odo {
+  background: var(--odo-bg);
+  color: var(--odo-ink);
+  border-radius: 16px;
+  padding: 18px 16px 16px;
+}
+.odo-label { font-size: 14px; color: #a9bcc5; margin: 0 0 10px; }
+.digits { display: flex; gap: 5px; align-items: stretch; }
+.digit {
+  flex: 1 1 0;
+  max-width: 56px;
+  background: var(--odo-cell);
+  border-radius: 6px;
+  text-align: center;
+  font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+  font-weight: 600;
+  font-size: clamp(34px, 11vw, 58px);
+  line-height: 1.2;
+  padding: 2px 0;
+  border-bottom: 2px solid rgba(255,255,255,.12);
+}
+.unit { align-self: flex-end; margin-left: 6px; font-size: 16px; color: #a9bcc5; padding-bottom: 8px; }
+.odo-edit { display: flex; gap: 8px; margin-top: 14px; }
+.odo-edit input { flex: 1; min-width: 0; }
+
+input[type="number"], input[type="date"], input[type="text"] {
+  font: inherit;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  min-height: 44px;
+  width: 100%;
+}
+.odo-edit input { background: #fff; color: #15262f; border-color: transparent; }
+button {
+  font: inherit;
+  font-weight: 600;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+}
+button.primary { background: var(--primary); color: var(--primary-ink); border-color: transparent; }
+button.quiet { background: transparent; border-color: transparent; color: var(--muted); font-weight: 500; padding: 0 10px; }
+button.danger { color: var(--late); }
+button:focus-visible, input:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+
+/* Résumé */
+.summary {
+  margin: 14px 0 0;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--surface);
+  border-left: 6px solid var(--ok);
+  font-weight: 500;
+}
+.summary.soon { border-left-color: var(--soon); }
+.summary.late { border-left-color: var(--late); }
+.summary.unknown { border-left-color: var(--muted); }
+
+/* Entretiens */
+.items { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.item { background: var(--surface); border-radius: 12px; padding: 14px; border: 1px solid var(--line); }
+.item-head { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+.item-name { font-size: 18px; font-weight: 600; margin: 0; }
+.item-detail { color: var(--muted); font-size: 14px; margin: 0; }
+.badge { font-weight: 600; font-size: 14px; white-space: nowrap; }
+.badge.ok { color: var(--ok); }
+.badge.soon { color: var(--soon); }
+.badge.late { color: var(--late); }
+.badge.unknown { color: var(--muted); }
+.bar { height: 10px; background: var(--track); border-radius: 6px; overflow: hidden; margin: 12px 0 8px; }
+.bar > span { display: block; height: 100%; border-radius: 6px; background: var(--ok); }
+.bar.soon > span { background: var(--soon); }
+.bar.late > span { background: var(--late); }
+.bar.unknown > span { background: var(--muted); width: 0 !important; }
+.facts { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 14px; color: var(--muted); margin: 0; }
+.facts strong { color: var(--ink); font-weight: 600; }
+.actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+.panel { margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--line); display: grid; gap: 10px; }
+.panel label { display: grid; gap: 4px; font-size: 14px; color: var(--muted); }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.panel .actions { margin-top: 2px; }
+
+/* Historique */
+.history { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.hist { display: flex; justify-content: space-between; gap: 10px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+.hist-main { min-width: 0; }
+.hist-title { font-weight: 600; margin: 0; }
+.hist-meta { margin: 0; font-size: 14px; color: var(--muted); overflow-wrap: anywhere; }
+.empty { color: var(--muted); padding: 10px 2px; }
+.foot { margin-top: 28px; font-size: 13px; color: var(--muted); }
+.tabs { display: flex; gap: 6px; margin: 0 0 14px; background: var(--track); padding: 4px; border-radius: 12px; }
+.tabs button { flex: 1; padding: 0 6px; font-size: 15px; border: 0; background: transparent; color: var(--muted); border-radius: 9px; }
+.tabs button[aria-selected="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.14); }
+select { font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; min-height: 44px; width: 100%; }
+select:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+.big { font-size: 46px; font-weight: 600; margin: 0; line-height: 1.1; }
+.formbox { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: grid; gap: 10px; }
+.formbox label { display: grid; gap: 4px; font-size: 14px; color: var(--muted); }
+.formbox .actions { margin-top: 0; }
+.live { font-size: 15px; margin: 0; }
+.live strong { font-family: "Barlow Condensed", "Arial Narrow", sans-serif; font-size: 24px; font-weight: 600; }
+.addrow { display: flex; gap: 8px; margin-top: 10px; }
+.addrow input { flex: 1; min-width: 0; }
+details { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; margin-bottom: 8px; padding: 0 12px; }
+summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
+summary:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+details[open] summary { border-bottom: 1px dashed var(--line); margin-bottom: 8px; }
+details .history { padding-bottom: 12px; }
+details .hist { background: var(--bg); }
+.remarks { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.remark { background: var(--surface); border-left: 6px solid var(--ok); border-radius: 10px; padding: 12px 14px; }
+.remark.soon { border-left-color: var(--soon); }
+.remark.late { border-left-color: var(--late); }
+.remark.unknown { border-left-color: var(--muted); }
+.remark strong { font-weight: 600; }
+@media (prefers-reduced-motion: no-preference) {
+  .bar > span { transition: width .35s ease; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Entretien Peugeot 106</h1>
+
+  <div class="tabs" role="tablist">
+    <button role="tab" id="tab-accueil" aria-selected="true" data-tab="accueil">Accueil</button>
+    <button role="tab" id="tab-suivi" aria-selected="false" data-tab="suivi">Suivi</button>
+    <button role="tab" id="tab-historique" aria-selected="false" data-tab="historique">Historique</button>
+    <button role="tab" id="tab-pieces" aria-selected="false" data-tab="pieces">Pièces</button>
+  </div>
+
+  <div id="view-accueil">
+  <section class="odo" aria-label="Kilométrage actuel">
+    <p class="odo-label">Kilométrage actuel</p>
+    <div class="digits" id="digits" role="img" aria-label="Kilométrage"></div>
+    <div class="odo-edit">
+      <input type="number" id="odoInput" inputmode="numeric" min="0" step="1" aria-label="Nouveau kilométrage">
+      <button class="primary" id="odoSave">Mettre à jour</button>
+    </div>
+  </section>
+
+  <h2>Prochains entretiens</h2>
+  <ul class="remarks" id="remarks"></ul>
+  </div>
+
+  <div id="view-suivi" hidden>
+
+  
+
+  
+
+  <h2>Entretiens à suivre</h2>
+  <ul class="items" id="items"></ul>
+
+  </div>
+
+  <div id="view-historique" hidden>
+  <h2>Historique</h2>
+  <ul class="history" id="history"></ul>
+
+  </div>
+
+  <div id="view-pieces" hidden>
+    <section class="odo" aria-label="Total des dépenses">
+      <p class="odo-label">Total dépensé</p>
+      <p class="num big" id="grand">0</p>
+      <p class="odo-label" id="grandSplit" style="margin:8px 0 0"></p>
+    </section>
+
+    <h2>Ajouter une dépense</h2>
+    <div class="formbox">
+      <label>Pièce<select id="exPart"></select></label>
+      <div class="row2">
+        <label>Date<input type="date" id="exDate"></label>
+        <label>Devise<input type="text" id="currency" maxlength="8" placeholder="DA, €…"></label>
+      </div>
+      <div class="row2">
+        <label>Prix d’achat<input type="number" id="exBuy" inputmode="decimal" min="0" step="any"></label>
+        <label>Prix d’entretien<input type="number" id="exLabor" inputmode="decimal" min="0" step="any"></label>
+      </div>
+      <p class="live">Somme : <strong id="exTotal">0</strong></p>
+      <div class="actions"><button class="primary" data-pact="add-ex">Ajouter la dépense</button></div>
+    </div>
+
+    <h2>Dépenses</h2>
+    <ul class="history" id="expenses"></ul>
+
+    <h2>Pièces de la Peugeot 106</h2>
+    <p class="foot" style="margin:0 0 10px">Liste générale par famille. Retirez les pièces qui ne concernent pas votre moteur.</p>
+    <div id="parts"></div>
+    <div class="addrow">
+      <input type="text" id="newPart" placeholder="Nouvelle pièce (ex. plaquettes de frein)" aria-label="Nouvelle pièce">
+      <button class="primary" data-pact="add-part">Ajouter</button>
+    </div>
+  </div>
+
+  <p class="foot">Les données restent enregistrées sur cet appareil, dans ce navigateur.</p>
+</div>
+
+<script>
+(function () {
+  var KEY = "entretien-voiture-v2";
+
+  var CATALOG = [
+    ["Entretien courant", ["Huile moteur", "Filtre à huile", "Filtre à essence", "Filtre à air", "Filtre d'habitacle", "Bougies", "Liquide de refroidissement", "Liquide de frein", "Huile de boîte de vitesses", "Essuie-glaces"]],
+    ["Moteur", ["Kit distribution", "Courroie d'accessoires", "Galet tendeur de courroie d'accessoires", "Pompe à eau", "Thermostat", "Joint de culasse", "Pochette de joints moteur", "Joint de cache-culbuteurs", "Joints spi (vilebrequin, arbre à cames)", "Cache courroie de distribution", "Support moteur", "Support de boîte de vitesses", "Pompe à huile", "Pompe à carburant", "Injecteurs", "Bobine d'allumage", "Fils de bougies"]],
+    ["Refroidissement et chauffage", ["Radiateur", "Durites de radiateur", "Vase d'expansion", "Bouchon de radiateur", "Moto-ventilateur", "Radiateur de chauffage", "Moteur de ventilation d'habitacle"]],
+    ["Transmission", ["Kit d'embrayage", "Butée d'embrayage", "Câble d'embrayage", "Volant moteur", "Cardan gauche", "Cardan droit", "Soufflets de cardan", "Câble d'accélérateur", "Boîte de vitesses"]],
+    ["Freinage", ["Plaquettes de frein avant", "Disques de frein avant", "Tambours de frein arrière", "Garnitures (mâchoires) de frein arrière", "Cylindres de roue arrière", "Étriers de frein", "Flexibles de frein", "Maître-cylindre de frein", "Servofrein", "Câble de frein à main"]],
+    ["Direction et suspension", ["Amortisseurs avant", "Amortisseurs arrière", "Ressorts de suspension", "Coupelles et butées d'amortisseur", "Rotules de direction", "Biellettes de direction", "Biellette de barre stabilisatrice", "Barre stabilisatrice", "Triangles de suspension", "Silentblocs de bras", "Crémaillère de direction", "Soufflets de crémaillère", "Barres de torsion arrière", "Roulements de roue", "Moyeux de roue"]],
+    ["Échappement", ["Collecteur d'échappement", "Catalyseur", "Silencieux intermédiaire", "Silencieux arrière", "Colliers et joints d'échappement", "Sonde lambda"]],
+    ["Électricité et éclairage", ["Batterie", "Alternateur", "Démarreur", "Phares avant", "Feux arrière", "Ampoule de clignotant", "Ampoule de plaque d'immatriculation", "Ampoules de feux de croisement et de route", "Fusibles", "Moteur d'essuie-glace", "Lève-vitres", "Klaxon", "Capteur de température d'eau", "Capteur de vilebrequin"]],
+    ["Carrosserie et habitacle", ["Rétroviseur extérieur", "Pare-brise", "Pare-chocs avant", "Pare-chocs arrière", "Serrures et poignées de porte", "Joints de porte", "Vérins de hayon", "Câble de capot"]],
+    ["Roues", ["Pneus", "Jantes", "Écrous de roue"]]
+  ];
+  var openCats = {};
+
+  function allCatalogParts() {
+    var all = [];
+    CATALOG.forEach(function (c) { all = all.concat(c[1]); });
+    return all;
+  }
+  function groupedParts() {
+    var groups = [], used = {};
+    CATALOG.forEach(function (c) {
+      var list = c[1].filter(function (x) { return state.parts.indexOf(x) >= 0; });
+      list.forEach(function (x) { used[x] = true; });
+      if (list.length) groups.push({ cat: c[0], parts: list });
+    });
+    var rest = state.parts.filter(function (x) { return !used[x]; });
+    if (rest.length) groups.push({ cat: "Autres pièces", parts: rest });
+    return groups;
+  }
+
+  function defaults() {
+    return {
+      odo: 328000,
+      items: [
+        { id: "vidange", name: "Vidange", detail: "Huile + filtre à huile", interval: 10000, last: 328000 },
+        { id: "filtre-essence", name: "Filtre à essence", detail: "", interval: 30000, last: 328000 },
+        { id: "filtre-air", name: "Filtre à air", detail: "", interval: 20000, last: 328000 },
+        { id: "bougies", name: "Bougies", detail: "", interval: 30000, last: 328000 },
+        { id: "distribution", name: "Kit distribution", detail: "Courroie + tendeur", interval: 50000, last: 218000 }
+      ],
+      history: [
+        { id: "h0", itemId: "vidange", km: 328000, date: "2026-06-04", note: "Dernier changement connu" },
+        { id: "h1", itemId: "filtre-essence", km: 328000, date: "2026-06-04", note: "Dernier changement connu" },
+        { id: "h2", itemId: "filtre-air", km: 328000, date: "2026-06-04", note: "Dernier changement connu" },
+        { id: "h3", itemId: "bougies", km: 328000, date: "2026-06-04", note: "Dernier changement connu" },
+        { id: "h4", itemId: "distribution", km: 218000, date: "2026-01-01", note: "Dernier changement connu" }
+      ],
+      parts: allCatalogParts(),
+      catalogVersion: 1,
+      expenses: [],
+      currency: ""
+    };
+  }
+
+  function load() {
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (raw) {
+        var s = JSON.parse(raw);
+        if (s && Array.isArray(s.items) && Array.isArray(s.history) && typeof s.odo === "number") return normalize(s);
+      }
+    } catch (e) {}
+    var d = defaults();
+    try {
+      var old = JSON.parse(localStorage.getItem("entretien-voiture-v1") || "null");
+      if (old && typeof old.odo === "number" && old.odo > d.odo) d.odo = old.odo;
+    } catch (e) {}
+    return d;
+  }
+  function normalize(s) {
+    if (!Array.isArray(s.parts)) s.parts = defaults().parts;
+    if (!Array.isArray(s.expenses)) s.expenses = [];
+    if (typeof s.currency !== "string") s.currency = "";
+    var seed = { h0: "2026-06-04", h1: "2026-06-04", h2: "2026-06-04", h3: "2026-06-04", h4: "2026-01-01" };
+    s.history.forEach(function (h) { if (seed[h.id] && !h.date) h.date = seed[h.id]; });
+    var oldParts = ["Courroie de distribution", "Tendeur de distribution"];
+    if (s.parts.some(function (p) { return oldParts.indexOf(p) >= 0; })) {
+      s.parts = s.parts.filter(function (p) { return oldParts.indexOf(p) < 0; });
+      if (s.parts.indexOf("Kit distribution") < 0) s.parts.push("Kit distribution");
+    }
+    s.expenses.forEach(function (x) { if (oldParts.indexOf(x.part) >= 0) x.part = "Kit distribution"; });
+    if (!s.catalogVersion) {
+      allCatalogParts().forEach(function (x) { if (s.parts.indexOf(x) < 0) s.parts.push(x); });
+      s.catalogVersion = 1;
+    }
+    return s;
+  }
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+  }
+
+  var state = load();
+  var open = {}; // itemId -> "done" | "settings"
+
+  function fmt(n) { return Math.round(n).toLocaleString("fr-FR"); }
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  function today() {
+    var d = new Date();
+    var m = String(d.getMonth() + 1).padStart(2, "0");
+    var j = String(d.getDate()).padStart(2, "0");
+    return d.getFullYear() + "-" + m + "-" + j;
+  }
+  function fmtDate(iso) {
+    if (!iso) return "";
+    var d = new Date(iso + "T00:00:00");
+    if (isNaN(d)) return "";
+    return d.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }).replace(/^1 /, "1er ");
+  }
+
+  function lastEntry(it) {
+    if (it.last == null) return null;
+    var m = state.history.filter(function (h) { return h.itemId === it.id && h.km === it.last; });
+    m.sort(function (a, b) { return (b.date || "").localeCompare(a.date || ""); });
+    return m[0] || null;
+  }
+
+  function status(item) {
+    if (item.last == null) return { kind: "unknown", remaining: null, label: "À renseigner" };
+    var due = item.last + item.interval;
+    var remaining = due - state.odo;
+    var threshold = 1000;
+    if (remaining < 0) return { kind: "late", remaining: remaining, due: due, label: "En retard de " + fmt(-remaining) + " km" };
+    if (remaining <= threshold) return { kind: "soon", remaining: remaining, due: due, label: "Bientôt : " + fmt(remaining) + " km" };
+    return { kind: "ok", remaining: remaining, due: due, label: "Dans " + fmt(remaining) + " km" };
+  }
+
+  function renderOdo() {
+    var s = String(Math.max(0, Math.round(state.odo)));
+    while (s.length < 6) s = "0" + s;
+    var html = "";
+    for (var i = 0; i < s.length; i++) html += '<span class="digit">' + s[i] + "</span>";
+    html += '<span class="unit">km</span>';
+    var el = document.getElementById("digits");
+    el.innerHTML = html;
+    el.setAttribute("aria-label", "Kilométrage : " + fmt(state.odo) + " km");
+    document.getElementById("odoInput").value = Math.round(state.odo);
+  }
+
+  function renderSummary() {
+    var el = document.getElementById("remarks");
+    var rows = state.items.map(function (it) { return { it: it, st: status(it) }; });
+    rows.sort(function (a, b) {
+      if (a.st.remaining == null) return 1;
+      if (b.st.remaining == null) return -1;
+      return a.st.remaining - b.st.remaining;
+    });
+    el.innerHTML = rows.map(function (r) {
+      var it = r.it, st = r.st, txt;
+      if (st.kind === "unknown") txt = "dernier changement à renseigner dans l’onglet Suivi.";
+      else if (st.kind === "late") txt = "en retard de " + fmt(-st.remaining) + " km (prévu à " + fmt(st.due) + " km). À faire dès que possible.";
+      else if (st.kind === "soon") txt = "dans " + fmt(st.remaining) + " km (à " + fmt(st.due) + " km). À prévoir bientôt.";
+      else txt = "dans " + fmt(st.remaining) + " km (à " + fmt(st.due) + " km).";
+      return '<li class="remark ' + st.kind + '"><strong>' + esc(it.name) + '</strong> : ' + txt + '</li>';
+    }).join("");
+  }
+
+  function itemHtml(it) {
+    var st = status(it);
+    var pct = 0;
+    if (it.last != null) pct = Math.max(0, Math.min(100, ((state.odo - it.last) / it.interval) * 100));
+    var facts = '<span>Tous les <strong>' + fmt(it.interval) + ' km</strong></span>';
+    if (it.last != null) {
+      var le = lastEntry(it);
+      facts += '<span>Dernier : <strong>' + fmt(it.last) + ' km</strong></span>';
+      if (le && le.date) facts += '<span>Fait le <strong>' + fmtDate(le.date) + '</strong></span>';
+      facts += '<span>Prochain : <strong>' + fmt(it.last + it.interval) + ' km</strong></span>';
+    } else {
+      facts += '<span>Dernier changement non renseigné</span>';
+    }
+    var panel = "";
+    if (open[it.id] === "done") {
+      panel = '<div class="panel">' +
+        '<div class="row2">' +
+        '<label>Kilométrage<input type="number" inputmode="numeric" min="0" data-f="km" value="' + Math.round(state.odo) + '"></label>' +
+        '<label>Date<input type="date" data-f="date" value="' + today() + '"></label>' +
+        '</div>' +
+        '<label>Note (facultatif)<input type="text" data-f="note" placeholder="Garage, marque, prix…"></label>' +
+        '<div class="actions"><button class="primary" data-act="done-save" data-id="' + it.id + '">Enregistrer</button>' +
+        '<button class="quiet" data-act="close" data-id="' + it.id + '">Annuler</button></div></div>';
+    } else if (open[it.id] === "settings") {
+      panel = '<div class="panel">' +
+        '<div class="row2">' +
+        '<label>Intervalle (km)<input type="number" inputmode="numeric" min="1" data-f="interval" value="' + it.interval + '"></label>' +
+        '<label>Dernier changement (km)<input type="number" inputmode="numeric" min="0" data-f="last" value="' + (it.last == null ? "" : it.last) + '"></label>' +
+        '<label style="grid-column:1/-1">Date du dernier changement<input type="date" data-f="date" value="' + ((lastEntry(it) && lastEntry(it).date) || "") + '"></label>' +
+        '</div>' +
+        '<div class="actions"><button class="primary" data-act="settings-save" data-id="' + it.id + '">Enregistrer</button>' +
+        '<button class="quiet" data-act="close" data-id="' + it.id + '">Annuler</button></div></div>';
+    }
+    return '<li class="item" data-item="' + it.id + '">' +
+      '<div class="item-head"><div><h3 class="item-name" style="margin:0">' + esc(it.name) + '</h3>' +
+      (it.detail ? '<p class="item-detail">' + esc(it.detail) + '</p>' : "") + '</div>' +
+      '<span class="badge ' + st.kind + '">' + st.label + '</span></div>' +
+      '<div class="bar ' + st.kind + '"><span style="width:' + pct.toFixed(1) + '%"></span></div>' +
+      '<p class="facts">' + facts + '</p>' +
+      '<div class="actions"><button class="primary" data-act="done" data-id="' + it.id + '">Fait aujourd’hui</button>' +
+      '<button data-act="settings" data-id="' + it.id + '">Réglages</button></div>' + panel + '</li>';
+  }
+
+  function renderItems() {
+    document.getElementById("items").innerHTML = state.items.map(itemHtml).join("");
+  }
+
+  function renderHistory() {
+    var el = document.getElementById("history");
+    if (!state.history.length) {
+      el.innerHTML = '<li class="empty">Aucun entretien enregistré pour le moment.</li>';
+      return;
+    }
+    var list = state.history.slice().sort(function (a, b) { return b.km - a.km; });
+    el.innerHTML = list.map(function (h) {
+      var it = state.items.filter(function (x) { return x.id === h.itemId; })[0];
+      var meta = fmt(h.km) + " km";
+      var d = fmtDate(h.date);
+      if (d) meta += " – " + d;
+      if (h.note) meta += " – " + esc(h.note);
+      return '<li class="hist"><div class="hist-main"><p class="hist-title">' + esc(it ? it.name : "Entretien") +
+        '</p><p class="hist-meta">' + meta + '</p></div>' +
+        '<button class="quiet danger" data-act="del" data-hid="' + h.id + '" aria-label="Supprimer cette ligne">Supprimer</button></li>';
+    }).join("");
+  }
+
+  function renderAll() {
+    renderOdo(); renderSummary(); renderItems(); renderHistory(); renderPieces();
+  }
+
+  function findItem(id) { return state.items.filter(function (x) { return x.id === id; })[0]; }
+  function val(scope, f) { var e = scope.querySelector('[data-f="' + f + '"]'); return e ? e.value : ""; }
+
+  document.getElementById("odoSave").addEventListener("click", function () {
+    var v = parseInt(document.getElementById("odoInput").value, 10);
+    if (isNaN(v) || v < 0) { document.getElementById("odoInput").focus(); return; }
+    state.odo = v; save(); renderAll();
+  });
+  document.getElementById("odoInput").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") document.getElementById("odoSave").click();
+  });
+
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-act]");
+    if (!b) return;
+    var act = b.getAttribute("data-act");
+    var id = b.getAttribute("data-id");
+    var li = b.closest(".item");
+
+    if (act === "done" || act === "settings") {
+      var mode = act;
+      open[id] = open[id] === mode ? null : mode;
+      renderItems();
+    } else if (act === "close") {
+      open[id] = null; renderItems();
+    } else if (act === "done-save") {
+      var km = parseInt(val(li, "km"), 10);
+      if (isNaN(km) || km < 0) return;
+      var item = findItem(id);
+      state.history.push({ id: "h" + Date.now(), itemId: id, km: km, date: val(li, "date") || today(), note: val(li, "note").trim() });
+      item.last = Math.max.apply(null, state.history.filter(function (h) { return h.itemId === id; }).map(function (h) { return h.km; }));
+      if (km > state.odo) state.odo = km;
+      open[id] = null; save(); renderAll();
+    } else if (act === "settings-save") {
+      var iv = parseInt(val(li, "interval"), 10);
+      var lastRaw = val(li, "last");
+      if (isNaN(iv) || iv < 1) return;
+      var it2 = findItem(id);
+      it2.interval = iv;
+      it2.last = lastRaw === "" ? null : Math.max(0, parseInt(lastRaw, 10) || 0);
+      if (it2.last != null) {
+        var dv = val(li, "date");
+        var ex = state.history.filter(function (h) { return h.itemId === id && h.km === it2.last; })[0];
+        if (ex) { if (dv) ex.date = dv; }
+        else state.history.push({ id: "h" + Date.now(), itemId: id, km: it2.last, date: dv || null, note: "Ajouté depuis les réglages" });
+      }
+      open[id] = null; save(); renderAll();
+    } else if (act === "del") {
+      var hid = b.getAttribute("data-hid");
+      var h = state.history.filter(function (x) { return x.id === hid; })[0];
+      state.history = state.history.filter(function (x) { return x.id !== hid; });
+      if (h) {
+        var it3 = findItem(h.itemId);
+        if (it3) {
+          var rest = state.history.filter(function (x) { return x.itemId === it3.id; }).map(function (x) { return x.km; });
+          it3.last = rest.length ? Math.max.apply(null, rest) : null;
+        }
+      }
+      save(); renderAll();
+    }
+  });
+
+  // ----- Onglets -----
+  function byId(id) { return document.getElementById(id); }
+  function showTab(t) {
+    byId('view-accueil').hidden = t !== 'accueil';
+    byId('view-suivi').hidden = t !== 'suivi';
+    byId('view-historique').hidden = t !== 'historique';
+    byId('view-pieces').hidden = t !== 'pieces';
+    ['accueil', 'suivi', 'historique', 'pieces'].forEach(function (n) {
+      byId('tab-' + n).setAttribute('aria-selected', String(n === t));
+    });
+  }
+  document.querySelector('.tabs').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-tab]');
+    if (b) showTab(b.getAttribute('data-tab'));
+  });
+
+  // ----- Pièces et coûts -----
+  function num(v) {
+    var n = parseFloat(String(v).replace(',', '.'));
+    return isNaN(n) || n < 0 ? 0 : n;
+  }
+  function money(n) {
+    var s = n.toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+    return state.currency ? s + ' ' + state.currency : s;
+  }
+  function updateLive() {
+    byId('exTotal').textContent = money(num(byId('exBuy').value) + num(byId('exLabor').value));
+  }
+
+  function renderPieces() {
+    var cur = byId('currency');
+    if (document.activeElement !== cur) cur.value = state.currency;
+
+    var sel = byId('exPart');
+    var prev = sel.value;
+    sel.innerHTML = groupedParts().map(function (g) {
+      return '<optgroup label="' + esc(g.cat) + '">' + g.parts.map(function (x) { return '<option>' + esc(x) + '</option>'; }).join('') + '</optgroup>';
+    }).join('');
+    if (state.parts.indexOf(prev) >= 0) sel.value = prev;
+
+    var buy = 0, labor = 0;
+    state.expenses.forEach(function (x) { buy += x.buy; labor += x.labor; });
+    byId('grand').textContent = money(buy + labor);
+    byId('grandSplit').textContent = 'Pièces : ' + money(buy) + ' – Entretien : ' + money(labor);
+
+    var list = state.expenses.slice().sort(function (a, b) {
+      return (b.date || '').localeCompare(a.date || '') || (b.id > a.id ? 1 : -1);
+    });
+    byId('expenses').innerHTML = list.length ? list.map(function (x) {
+      return '<li class="hist"><div class="hist-main"><p class="hist-title">' + esc(x.part) + ' – ' + money(x.buy + x.labor) + '</p>' +
+        '<p class="hist-meta">' + (fmtDate(x.date) || 'Sans date') + ' – achat ' + money(x.buy) + ' – entretien ' + money(x.labor) + '</p></div>' +
+        '<button class="quiet danger" data-pact="del-ex" data-id="' + esc(x.id) + '" aria-label="Supprimer cette dépense">Supprimer</button></li>';
+    }).join('') : '<li class="empty">Aucune dépense enregistrée. Ajoutez-en une ci-dessus.</li>';
+
+    var groups = groupedParts();
+    byId('parts').innerHTML = groups.length ? groups.map(function (g) {
+      var inner = g.parts.map(function (name) {
+        var i = state.parts.indexOf(name);
+        var tot = 0, n = 0;
+        state.expenses.forEach(function (x) { if (x.part === name) { tot += x.buy + x.labor; n++; } });
+        return '<li class="hist"><div class="hist-main"><p class="hist-title">' + esc(name) + '</p><p class="hist-meta">' +
+          (n ? n + (n > 1 ? ' dépenses' : ' dépense') + ' – total ' + money(tot) : 'Aucune dépense') + '</p></div>' +
+          '<button class="quiet danger" data-pact="del-part" data-i="' + i + '" aria-label="Retirer ' + esc(name) + '">Retirer</button></li>';
+      }).join('');
+      return '<details data-cat="' + esc(g.cat) + '"' + (openCats[g.cat] ? ' open' : '') + '><summary>' + esc(g.cat) + ' (' + g.parts.length + ')</summary><ul class="history">' + inner + '</ul></details>';
+    }).join('') : '<p class="empty">Aucune pièce. Ajoutez-en une ci-dessous.</p>';
+  }
+
+  function addPart() {
+    var inp = byId('newPart');
+    var name = inp.value.trim();
+    if (!name) { inp.focus(); return; }
+    if (state.parts.indexOf(name) < 0) state.parts.push(name);
+    inp.value = '';
+    save(); renderPieces();
+  }
+
+  byId('view-pieces').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-pact]');
+    if (!b) return;
+    var a = b.getAttribute('data-pact');
+    if (a === 'add-ex') {
+      var part = byId('exPart').value;
+      if (!part) { byId('newPart').focus(); return; }
+      state.expenses.push({
+        id: 'e' + Date.now(),
+        part: part,
+        date: byId('exDate').value || today(),
+        buy: num(byId('exBuy').value),
+        labor: num(byId('exLabor').value)
+      });
+      byId('exBuy').value = '';
+      byId('exLabor').value = '';
+      save(); renderPieces(); updateLive();
+    } else if (a === 'del-ex') {
+      var id = b.getAttribute('data-id');
+      state.expenses = state.expenses.filter(function (x) { return x.id !== id; });
+      save(); renderPieces();
+    } else if (a === 'add-part') {
+      addPart();
+    } else if (a === 'del-part') {
+      state.parts.splice(parseInt(b.getAttribute('data-i'), 10), 1);
+      save(); renderPieces();
+    }
+  });
+  byId('parts').addEventListener('toggle', function (e) {
+    var d = e.target;
+    if (d && d.tagName === 'DETAILS') openCats[d.getAttribute('data-cat')] = d.open;
+  }, true);
+  byId('newPart').addEventListener('keydown', function (e) { if (e.key === 'Enter') addPart(); });
+  byId('exBuy').addEventListener('input', updateLive);
+  byId('exLabor').addEventListener('input', updateLive);
+  byId('currency').addEventListener('input', function () {
+    state.currency = this.value.trim();
+    save(); renderPieces(); updateLive();
+  });
+  byId('exDate').value = today();
+
+  renderAll();
+  updateLive();
+})();
+</script>
+</body>
+</html>
